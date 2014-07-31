@@ -7,7 +7,7 @@ var path = require('path');
 var util = require('util');
 
 var app = express();
-var dir =  __dirname;
+var dir =  process.cwd();
 app.use(express.static(dir)); //app public directory
 var server = http.createServer(app);
 server.listen(8088);
