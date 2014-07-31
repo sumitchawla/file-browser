@@ -1,0 +1,32 @@
+{
+  "name": "file-browser",
+  "author": "Sumit Chawla",
+  "version": "0.0.1",
+  "description": "file-browser is a utility to browse files on your file system using your browser",
+  "keywords": [
+    "filebrowser",
+    "file browser"
+  ],
+  "bin": {
+    "file-browser": "./index"
+  }
+  "homepage": "https://github.com/sumitchawla/file-browser",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sumitchawla/file-browser.git"
+  },
+  "dependencies": {
+    "express": "~4.4"
+  },
+  "devDependencies": {
+    "mocha": "1.20.1"
+  },
+  "main": "file-browser",
+  "bugs": {
+    "url": "https://github.com/sumitchawla/file-browser/issues"
+  },
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "license": "MIT"
+}
