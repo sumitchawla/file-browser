@@ -1,3 +1,14 @@
-body { left:10%;width:80%;position:absolute; top:10%;}
+body { left:10%;width:80%;position:absolute; top:10%; color: black!important;}
 
 .mainpanel { height:90%;min-height:400px;}
+
+.linksholder ul { list-style-type: none; }
+
+.linksholder li { font-size: 16px; line-height: 1.5em;}
+
+.linksholder li .fa { margin-right: 5px; }
+
+.linksholder a { color : blue;}
+
+.linksholder .fa { color: black;}
+
