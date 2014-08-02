@@ -34,4 +34,12 @@ app.get('/', function(req, res) {
   });
 });
 
+app.get('/template', function(req, res) {
+    fs.readFile('lib/template.html', function (err, template) {
+      if (err) throw err;
+       res.write(template);
+       res.end();
+    });
+});
+
 
