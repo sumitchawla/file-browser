@@ -9,6 +9,7 @@ var util = require('util');
 var app = express();
 var dir =  process.cwd();
 app.use(express.static(dir)); //app public directory
+app.use(express.static(__dirname)); //module directory
 var server = http.createServer(app);
 server.listen(8088);
 console.log("Please open the link in your browser http://<YOUR-IP>:8088");
@@ -40,7 +41,7 @@ function getFileIcon(ext) {
 
 
 app.get('/', function(req, res) {
-   fs.readFile('lib/template.html', function (err, template) {
+   fs.readFile(path.join(__dirname, 'lib/template.html'), function (err, template) {
       console.log(typeof(template));
       if (err) throw err;
       fs.readdir(dir, function (err, files) {
@@ -74,5 +75,3 @@ app.get('/template', function(req, res) {
        res.end();
     });
 });
-
-
