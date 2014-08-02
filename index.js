@@ -40,8 +40,38 @@ function getFileIcon(ext) {
 }
 
 
+app.get('/files', function(req, res) {
+ fs.readdir(dir, function (err, files) {
+     if (err) {
+        throw err;
+      }
+      var data = [];
+      files
+      .filter(function (file) {
+          return true;
+      }).forEach(function (file) {
+        var ext = path.extname(file);
+        //console.log("%s (%s)", file,ext );
+        data.push({ File : file, Ext : ext });
+      });
+      res.json(data);
+  });
+});
+
 app.get('/', function(req, res) {
-   fs.readFile(path.join(__dirname, 'lib/template.html'), function (err, template) {
+ res.redirect('lib/template.html'); 
+});
+
+app.get('/template', function(req, res) {
+    res.redirect
+    fs.readFile('lib/template.html', function (err, template) {
+      if (err) throw err;
+       res.write(template);
+       res.end();
+    });
+});
+
+/* fs.readFile(path.join(__dirname, 'lib/template.html'), function (err, template) {
       console.log(typeof(template));
       if (err) throw err;
       fs.readdir(dir, function (err, files) {
@@ -50,9 +80,9 @@ app.get('/', function(req, res) {
       }
       var data = '<ul>';
       files
-      /*.map(function (file) {
+      .map(function (file) {
         return path.join(dir, file);
-      })*/.filter(function (file) {
+      }).filter(function (file) {
           return true;
 //        return fs.statSync(file).isFile();
       }).forEach(function (file) {
@@ -63,15 +93,6 @@ app.get('/', function(req, res) {
       data+= '</ul>';
       res.write(template.toString().replace("{links-holder}", data));
       res.end();
-  });;
+  });
   });      
-  
-});
-
-app.get('/template', function(req, res) {
-    fs.readFile('lib/template.html', function (err, template) {
-      if (err) throw err;
-       res.write(template);
-       res.end();
-    });
-});
+ */
