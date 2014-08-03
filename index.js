@@ -9,13 +9,16 @@ var util = require('util');
 
 var program = require('commander');
 
+function collect(val, memo) {
+  if(val && val.indexOf('.') != 0) val = "." + val;
+  memo.push(val);
+  return memo;
+}
+
 program
-  .option('-p, --port', 'Port to run the file-browser. Default value is 8088')
-  .option('-e, --exclude', 'File extensions to exclude')
+  .option('-p, --port <port>', 'Port to run the file-browser. Default value is 8088')
+  .option('-e, --exclude <exclude>', 'File extensions to exclude. To exclude multiple extension pass -e multiple times. e.g. ( -e .js -e .cs -e .swp) ', collect, [])
   .parse(process.argv);
-
-console.log(program);
-
 
 var app = express();
 var dir =  process.cwd();
@@ -49,6 +52,10 @@ app.get('/files', function(req, res) {
                   data.push({ Name : file, IsDirectory: true, Path : path.join(query, file)  });
                 } else {
                   var ext = path.extname(file);
+                  if(program.exclude && _.contains(program.exclude, ext)) {
+                    console.log("excluding file ", file);
+                    return;
+                  }       
                   data.push({ Name : file, Ext : ext, IsDirectory: false });
                 }
 
