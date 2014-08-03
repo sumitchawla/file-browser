@@ -30,7 +30,7 @@ app.get('/files', function(req, res) {
           return true;
       }).forEach(function (file) {
         try {
-                console.log("processing ", file);
+                //console.log("processing ", file);
                 var isDirectory = fs.statSync(path.join(currentDir,file)).isDirectory();
                 if (isDirectory) {
                   data.push({ Name : file, IsDirectory: true, Path : path.join(query, file)  });
