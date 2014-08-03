@@ -56,7 +56,7 @@ app.get('/files', function(req, res) {
                     console.log("excluding file ", file);
                     return;
                   }       
-                  data.push({ Name : file, Ext : ext, IsDirectory: false });
+                  data.push({ Name : file, Ext : ext, IsDirectory: false, Path : path.join(query, file) });
                 }
 
         } catch(e) {
