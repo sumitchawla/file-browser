@@ -7,13 +7,26 @@ var fs = require('fs');
 var path = require('path');
 var util = require('util');
 
+var program = require('commander');
+
+program
+  .option('-p, --port', 'Port to run the file-browser. Default value is 8088')
+  .option('-e, --exclude', 'File extensions to exclude')
+  .parse(process.argv);
+
+console.log(program);
+
+
 var app = express();
 var dir =  process.cwd();
 app.use(express.static(dir)); //app public directory
 app.use(express.static(__dirname)); //module directory
 var server = http.createServer(app);
-server.listen(8088);
-console.log("Please open the link in your browser http://<YOUR-IP>:8088");
+
+if(!program.port) program.port = 8088;
+
+server.listen(program.port);
+console.log("Please open the link in your browser http://<YOUR-IP>:" + program.port);
 
 app.get('/files', function(req, res) {
  var currentDir =  dir;
