@@ -1,57 +1,18 @@
-#!/usr/bin/env node
-
-var http = require('http');
-var _ = require('lodash');
-var express = require('express');
 var fs = require('fs');
+var _ = require('lodash');
 var path = require('path');
-var util = require('util');
 
-var argv = require('yargs')
-  .usage('Usage: $0 <command> [options]')
-  .command('$0', 'Browse file system.')
-  .example('$0 -e .js .swf .apk', 'Exclude extensions while browsing.')
-  .alias('i', 'include')
-  .array('i')
-  .describe('i', 'File extension to include.')
-  .alias('e', 'exclude')
-  .array('e')
-  .describe('e', 'File extensions to exclude.')
-  .alias('p', 'port')
-  .describe('p', 'Port to run the file-browser. [default:8088]')
-  .help('h')
-  .alias('h', 'help')
-  // .describe('h', '')
-  // .epilog('copyright 2015')
-  // .demandOption(['i', 'e']) // required fields
-  .check(_checkValidity)
-  .argv;
+var dir;
+var include;
+var exclude;
 
-function _checkValidity(argv) {
-  if (argv.i && argv.e) return new Error('Select -i or -e.');
-  if (argv.i && argv.i.length == 0) return new Error('Supply at least one extension for -i option.');
-  if (argv.e && argv.e.length == 0) return new Error('Supply at least one extension for -e option.');
-  return true;
+exports.setcwd = function(cwd, inc, exc) {
+    dir = cwd;
+    include = inc;
+    exclude = exc;
 }
 
-function collect(val, memo) {
-  if(val && val.indexOf('.') != 0) val = "." + val;
-  memo.push(val);
-  return memo;
-}
-
-var app = express();
-var dir =  process.cwd();
-app.use(express.static(dir)); //app public directory
-app.use(express.static(__dirname)); //module directory
-var server = http.createServer(app);
-
-if(!argv.port) argv.port = 8088;
-
-server.listen(argv.port);
-console.log("Please open the link in your browser http://localhost:" + argv.port);
-
-app.get('/files', function(req, res) {
+exports.get = function(req, res) {
  var currentDir =  dir;
  var query = req.query.path || '';
  if (query) currentDir = path.join(dir, query);
@@ -73,11 +34,11 @@ app.get('/files', function(req, res) {
                   data.push({ Name : file, IsDirectory: true, Path : path.join(query, file)  });
                 } else {
                   var ext = path.extname(file);
-                  if(argv.exclude && _.contains(argv.exclude, ext)) {
+                  if(exclude && _.contains(exclude, ext)) {
                     console.log("excluding file ", file);
                     return;
                   }
-                  else if(argv.include && !_.contains(argv.include, ext)) {
+                  else if(include && !_.contains(include, ext)) {
                     console.log("not including file", file);
                     return;
                   }
@@ -92,8 +53,4 @@ app.get('/files', function(req, res) {
       data = _.sortBy(data, function(f) { return f.Name });
       res.json(data);
   });
-});
-
-app.get('/', function(req, res) {
- res.redirect('lib/template.html'); 
-});
+};
