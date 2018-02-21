@@ -2,6 +2,7 @@
 
 var http = require('http');
 var express = require('express');
+var path = require('path');
 var fb = require('./index.js');
 
 var argv = require('yargs')
@@ -38,8 +39,14 @@ function collect(val, memo) {
 }
 
 var app = express();
+
 var dir =  process.cwd();
-app.use(express.static(dir)); //app public directory
+app.get('/b', function(req, res) {
+    let file = path.join(dir,req.query.f);
+    res.sendFile(file);
+})
+
+
 app.use(express.static(__dirname)); //module directory
 var server = http.createServer(app);
 
