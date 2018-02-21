@@ -6,6 +6,8 @@ var dir;
 var include;
 var exclude;
 
+exports.moduleroot = __dirname;
+
 exports.setcwd = function(cwd, inc, exc) {
     dir = cwd;
     include = inc;
