@@ -1,7 +1,7 @@
 {
   "name": "file-browser",
   "author": "David Dombrowsky",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "file-browser allows embedding of a web-enabled file browser in your node site",
   "keywords": [
     "filebrowser",

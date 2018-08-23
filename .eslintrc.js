@@ -11,7 +11,6 @@ module.exports = {
     "rules": {
         "accessor-pairs": "error",
         "array-bracket-newline": "error",
-        "array-bracket-spacing": "error",
         "array-callback-return": "error",
         "array-element-newline": "error",
         "arrow-body-style": "error",
@@ -76,7 +75,6 @@ module.exports = {
         "max-lines": "error",
         "max-lines-per-function": "error",
         "max-nested-callbacks": "error",
-        "max-params": "error",
         "max-statements": "off",
         "max-statements-per-line": "off",
         "multiline-comment-style": "error",

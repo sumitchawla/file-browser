@@ -6,7 +6,15 @@ const path = require('path');
 const fb = require('./index.js');
 
 fb.configure({
-    removeLockString: true
+    removeLockString: true,
+
+    /*
+     * Example of otherRoots.
+     * The other roots are listed and displayed, but their
+     * locations need to be calculated by the server.
+     * See OTHERROOTS in the app.
+     */
+    otherRoots: [ '/tmp' ]
 });
 
 function checkValidity(argv) {
@@ -37,7 +45,17 @@ const app = express();
 
 var dir =  process.cwd();
 app.get('/b', function(req, res) {
-    let file = path.join(dir,req.query.f);
+    let file;
+    if (req.query.r === '/tmp') {
+
+        /*
+         * OTHERROOTS
+         * This is an example of a manually calculated path.
+         */
+        file = path.join(req.query.r,req.query.f);
+    } else {
+        file = path.join(dir,req.query.f);
+    }
     res.sendFile(file);
 })
 
