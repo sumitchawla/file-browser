@@ -1,21 +1,23 @@
 file-browser
 ============
-file-browser is a utility to browse files on your file system using your browser. Its equivalent of creating a file share that can be accessed over http. Using this you can share files between different machines, and across different operating systems. 
+`file-browser` allows embedding of a web-enabled file browser in your node site.
+
+Original Author Credit: Sumit Chawla
 
 ## How to install
 ```js
-  npm -g install file-browser
+  npm install file-browser
 ```
 
 ## How to Run
-Change directory to the directory you want to browse. Then run the following command in that directory.
+An exmplae server is implemented in:
 ```js
-  file-browser
+  ./cli.js
 ```
 You would see the message <b>Please open the link in your browser http://<YOUR-IP>:8088</b> in your console. Now you can point your browser to your IP. 
 For localhost access the files over http://127.0.0.1:8088 
 
-file-browser supports following command line switches for additional functinality.
+The example cli supports following command line switches for additional functinality.
 
 ```js
     -p, --port <port>        Port to run the file-browser. Default value is 8088
