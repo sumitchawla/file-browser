@@ -6,6 +6,11 @@ let dir;
 let include;
 let exclude;
 
+// default configuration
+let config = {
+    removeLockString: false
+};
+
 exports.moduleroot = __dirname;
 
 exports.setcwd = function(cwd, inc, exc) {
@@ -39,10 +44,26 @@ exports.get = function(req, res) {
             else if(include && !_.contains(include, ext)) {
                 return;
             }
-            data.push({ Name : file, Ext : ext, IsDirectory: false, Path : path.join(query, file) });
+            let filestr;
+            if (config.removeLockString) {
+                filestr = file.replace('.lock','');
+            } else {
+                filestr = file;
+            }
+            data.push({
+                Name : filestr,
+                Ext : ext,
+                IsDirectory: false,
+                Path : path.join(query, file)
+            });
         }
       });
       data = _.sortBy(data, function(f) { return f.Name });
       res.json(data);
   });
 };
+
+exports.configure = function(c) {
+    if (!c) return;
+    config = c;
+}

@@ -5,6 +5,10 @@ const express = require('express');
 const path = require('path');
 const fb = require('./index.js');
 
+fb.configure({
+    removeLockString: true
+});
+
 function checkValidity(argv) {
   if (argv.i && argv.e) return new Error('Select -i or -e.');
   if (argv.i && argv.i.length === 0) return new Error('Supply at least one extension for -i option.');
