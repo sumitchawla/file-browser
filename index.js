@@ -63,6 +63,11 @@ function displayFiles(err, files, currentDir, query) {
     return data;
 }
 
+/*
+ * readRoots: read the list of files in a list of roots.
+ * This is a recursive function, calling itself in
+ * the readdir() callback until the list is iterated through.
+ */
 function readRoots(roots, res, query, fullList) {
     let currentDir = roots.shift();
 
@@ -70,6 +75,7 @@ function readRoots(roots, res, query, fullList) {
         let data = fullList.concat(displayFiles(err, files, currentDir, query));
 
         if (roots.length > 0) {
+            // loop to the next element
             readRoots(roots, res, query, data);
         } else {
             res.json(_.sortBy(data, function(f) { return f.Name }));
