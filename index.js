@@ -20,10 +20,7 @@ exports.setcwd = function(cwd, inc, exc) {
     exclude = exc;
 }
 
-function displayFiles(err, files, currentDir, query) {
-    if (err) {
-        throw err;
-    }
+function displayFiles(files, currentDir, query) {
     let data = [];
     files.forEach(function (file) {
         let isDirectory =
@@ -72,7 +69,13 @@ function readRoots(roots, res, query, fullList) {
     let currentDir = roots.shift();
 
     fs.readdir(currentDir, function (err, files) {
-        let data = fullList.concat(displayFiles(err, files, currentDir, query));
+        let data;
+        if (err) {
+            // ignore non-readable directories
+            data = fullList;
+        } else {
+            data = fullList.concat(displayFiles(files, currentDir, query));
+        }
 
         if (roots.length > 0) {
             // loop to the next element
