@@ -14,7 +14,7 @@ fb.configure({
      * locations need to be calculated by the server.
      * See OTHERROOTS in the app.
      */
-    otherRoots: [ '/tmp' ]
+    otherRoots: [ '/tmp', '/broken' ]
 });
 
 function checkValidity(argv) {
