@@ -4,6 +4,11 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- make node integration compatible -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <script src="/lib/jquery.min.js"></script>
     <title>File Browser</title>
     <link rel="stylesheet" href="/lib/bootstrap.min.css">
     <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
@@ -23,7 +28,6 @@
       </div>
 
   </div> 
-    <script src="/lib/jquery.min.js"></script>
     <script src="/lib/bootstrap.min.js"></script>
     <script src="/lib/datatable/js/jquery.datatables.min.js"></script>
     <script src="/lib/app.js"></script>

@@ -1,99 +1,107 @@
-#!/usr/bin/env node
+const fs = require('fs');
+const _ = require('lodash');
+const path = require('path');
 
-var http = require('http');
-var _ = require('lodash');
-var express = require('express');
-var fs = require('fs');
-var path = require('path');
-var util = require('util');
+let dir;
+let include;
+let exclude;
 
-var argv = require('yargs')
-  .usage('Usage: $0 <command> [options]')
-  .command('$0', 'Browse file system.')
-  .example('$0 -e .js .swf .apk', 'Exclude extensions while browsing.')
-  .alias('i', 'include')
-  .array('i')
-  .describe('i', 'File extension to include.')
-  .alias('e', 'exclude')
-  .array('e')
-  .describe('e', 'File extensions to exclude.')
-  .alias('p', 'port')
-  .describe('p', 'Port to run the file-browser. [default:8088]')
-  .help('h')
-  .alias('h', 'help')
-  // .describe('h', '')
-  // .epilog('copyright 2015')
-  // .demandOption(['i', 'e']) // required fields
-  .check(_checkValidity)
-  .argv;
+// default configuration
+let config = {
+    removeLockString: false,
+    otherRoots: []
+};
 
-function _checkValidity(argv) {
-  if (argv.i && argv.e) return new Error('Select -i or -e.');
-  if (argv.i && argv.i.length == 0) return new Error('Supply at least one extension for -i option.');
-  if (argv.e && argv.e.length == 0) return new Error('Supply at least one extension for -e option.');
-  return true;
+exports.moduleroot = __dirname;
+
+exports.setcwd = function(cwd, inc, exc) {
+    dir = cwd;
+    include = inc;
+    exclude = exc;
 }
 
-function collect(val, memo) {
-  if(val && val.indexOf('.') != 0) val = "." + val;
-  memo.push(val);
-  return memo;
+function displayFiles(files, currentDir, query) {
+    let data = [];
+    files.forEach(function (file) {
+        let isDirectory =
+            fs.statSync(path.join(currentDir, file)).isDirectory();
+        if (isDirectory) {
+            data.push({
+                Name : file,
+                IsDirectory: true,
+                Path : path.join(query, file)
+            });
+        } else {
+            let ext = path.extname(file);
+            if(exclude && _.contains(exclude, ext)) {
+                return;
+            } else if(include && !_.contains(include, ext)) {
+                return;
+            }
+            let filestr;
+            if (config.removeLockString) {
+                filestr = file.replace('.lock','');
+            } else {
+                filestr = file;
+            }
+            let rstr = '';
+            if (currentDir !== dir) {
+                rstr = currentDir;
+            }
+            data.push({
+                Name : filestr,
+                Ext : ext,
+                IsDirectory: false,
+                Path : path.join(query, file),
+                Root : rstr
+            });
+        }
+    });
+    return data;
 }
 
-var app = express();
-var dir =  process.cwd();
-app.use(express.static(dir)); //app public directory
-app.use(express.static(__dirname)); //module directory
-var server = http.createServer(app);
+/*
+ * readRoots: read the list of files in a list of roots.
+ * This is a recursive function, calling itself in
+ * the readdir() callback until the list is iterated through.
+ */
+function readRoots(roots, res, query, fullList) {
+    let currentDir = roots.shift();
 
-if(!argv.port) argv.port = 8088;
-
-server.listen(argv.port);
-console.log("Please open the link in your browser http://localhost:" + argv.port);
-
-app.get('/files', function(req, res) {
- var currentDir =  dir;
- var query = req.query.path || '';
- if (query) currentDir = path.join(dir, query);
- console.log("browsing ", currentDir);
- fs.readdir(currentDir, function (err, files) {
-     if (err) {
-        throw err;
-      }
-      var data = [];
-      files
-      .filter(function (file) {
-          return true;
-      })
-      .forEach(function (file) {
-        try {
-                //console.log("processing ", file);
-                var isDirectory = fs.statSync(path.join(currentDir,file)).isDirectory();
-                if (isDirectory) {
-                  data.push({ Name : file, IsDirectory: true, Path : path.join(query, file)  });
-                } else {
-                  var ext = path.extname(file);
-                  if(argv.exclude && _.contains(argv.exclude, ext)) {
-                    console.log("excluding file ", file);
-                    return;
-                  }
-                  else if(argv.include && !_.contains(argv.include, ext)) {
-                    console.log("not including file", file);
-                    return;
-                  }
-                  data.push({ Name : file, Ext : ext, IsDirectory: false, Path : path.join(query, file) });
-                }
-
-        } catch(e) {
-          console.log(e);
+    fs.readdir(currentDir, function (err, files) {
+        let data;
+        if (err) {
+            // ignore non-readable directories
+            data = fullList;
+        } else {
+            data = fullList.concat(displayFiles(files, currentDir, query));
         }
 
-      });
-      data = _.sortBy(data, function(f) { return f.Name });
-      res.json(data);
-  });
-});
+        if (roots.length > 0) {
+            // loop to the next element
+            readRoots(roots, res, query, data);
+        } else {
+            res.json(_.sortBy(data, function(f) { return f.Name }));
+        }
+    });
 
-app.get('/', function(req, res) {
- res.redirect('lib/template.html'); 
-});
+}
+
+exports.get = function(req, res) {
+    let currentDir =  dir;
+    let query = req.query.path || '';
+    let roots = [];
+    if (query) {
+        roots.push(path.join(dir, query));
+    } else {
+        // top level, add all roots
+        roots = config.otherRoots.slice();
+        roots.push(currentDir);
+    }
+    readRoots(roots, res, query, []);
+};
+
+exports.configure = function(c) {
+    if (!c) return;
+    config = c;
+}

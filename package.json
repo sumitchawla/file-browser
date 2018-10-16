@@ -1,8 +1,8 @@
 {
   "name": "file-browser",
-  "author": "Sumit Chawla",
-  "version": "0.0.5",
-  "description": "file-browser is a utility to browse files on your file system using your browser. Its equivalent of creating a file share that can be accessed over http",
+  "author": "David Dombrowsky",
+  "version": "0.2.3",
+  "description": "file-browser allows embedding of a web-enabled file browser in your node site",
   "keywords": [
     "filebrowser",
     "file browser",
@@ -12,25 +12,22 @@
   "bin": {
     "file-browser": "./index.js"
   },
-  "homepage": "https://github.com/sumitchawla/file-browser",
+  "homepage": "https://github.com/ddombrowsky/file-browser",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sumitchawla/file-browser.git"
+    "url": "https://github.com/ddombrowsky/file-browser.git"
   },
   "dependencies": {
-    "express": "~4.4",
     "lodash": "~2.4",
-    "yargs": "8.0.2"
+    "yargs": "8.0.2",
+    "babel-preset-env": "^1.6.1"
   },
   "devDependencies": {
-    "mocha": "1.20.1"
+    "express": "^4.16.2"
   },
   "main": "file-browser",
   "bugs": {
-    "url": "https://github.com/sumitchawla/file-browser/issues"
-  },
-  "scripts": {
-    "test": "mocha test.js"
+    "url": "https://github.com/ddombrowsky/file-browser/issues"
   },
   "license": "MIT"
 }
