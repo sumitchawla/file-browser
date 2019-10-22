@@ -18,7 +18,7 @@
     "url": "https://github.com/ddombrowsky/file-browser.git"
   },
   "dependencies": {
-    "lodash": "~2.4",
+    "lodash": "~4.17",
     "yargs": "8.0.2",
     "babel-preset-env": "^1.6.1"
   },
